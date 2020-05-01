@@ -56,6 +56,7 @@ export class AppProfile {
             onIonChange={ev => (this.state = ev.detail.checked)}
           />
         </ion-item>
+
       </ion-content>
     ];
   }

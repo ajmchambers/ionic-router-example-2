@@ -1,6 +1,6 @@
 import { Component, Listen, State, h, Prop } from '@stencil/core';
 import { SearchbarChangeEventDetail, RouterEventDetail } from '@ionic/core';
-import { paramsEncode, paramsDecode, ParamsObject } from '../../helpers/utils';
+import { paramsEncode, paramsDecode, ParamsObject, openURL } from '../../helpers/utils';
 
 @Component({
   tag: 'app-home',
@@ -29,6 +29,12 @@ export class AppHome {
     }
   }
 
+  /* for debugging, see: https://github.com/ionic-team/ionic/blob/master/core/src/components/button/button.tsx#L147-L167 */
+  private handleClick = (ev: Event) => {
+    debugger;
+    openURL("/profile/ionic", ev, "forward")
+  }
+
   render() {
     return [
       <ion-header>
@@ -48,7 +54,8 @@ export class AppHome {
           check out our docs on <a href="https://stenciljs.com">stenciljs.com</a> to get started.
         </p>
 
-        <ion-button href="/profile/ionic" expand="block">Profile page</ion-button>
+        {/* <ion-button href="/profile/ionic" expand="block">Profile page</ion-button> */}
+        <ion-button onClick={(ev) => this.handleClick(ev)} expand="block">Profile page</ion-button>
       </ion-content>
     ];
   }

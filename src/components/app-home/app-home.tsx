@@ -21,8 +21,12 @@ export class AppHome {
       search: e.detail.value
     };
     const search = paramsEncode(this.searchParams);
-    const router: HTMLIonRouterElement = await (this.router as any).componentOnReady();
-    router.push(`${window.location.pathname}${search}`, "root");
+    const oldUrl = `${window.location.pathname}${window.location.search}`;
+    const newUrl = `${window.location.pathname}${search}`;
+    if (oldUrl !== newUrl) {
+      const router: HTMLIonRouterElement = await (this.router as any).componentOnReady();
+      router.push(newUrl, "root");
+    }
   }
 
   render() {

@@ -1,4 +1,4 @@
-import { Component, Listen, State, h } from '@stencil/core';
+import { Component, Listen, State, h, Prop } from '@stencil/core';
 import { SearchbarChangeEventDetail, RouterEventDetail } from '@ionic/core';
 import { paramsEncode, paramsDecode, ParamsObject } from '../../helpers/utils';
 
@@ -7,6 +7,7 @@ import { paramsEncode, paramsDecode, ParamsObject } from '../../helpers/utils';
   styleUrl: 'app-home.css'
 })
 export class AppHome {
+  @Prop({ connect: 'ion-router' }) router: HTMLIonRouterElement;
   @State() searchParams: ParamsObject = paramsDecode(window.location.search);
 
   @Listen('ionRouteWillChange', {target: "body"})
@@ -20,7 +21,8 @@ export class AppHome {
       search: e.detail.value
     };
     const search = paramsEncode(this.searchParams);
-    window.history.replaceState(window.history.state, '', `${window.location.pathname}${search}`)
+    const router: HTMLIonRouterElement = await (this.router as any).componentOnReady();
+    router.push(`${window.location.pathname}${search}`, "root");
   }
 
   render() {

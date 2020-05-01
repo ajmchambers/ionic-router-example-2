@@ -49,6 +49,7 @@ export class AppHome {
         </p>
 
         <ion-button href="/profile/ionic" expand="block">Profile page</ion-button>
+        <ion-button href="/redirect" expand="block">Test Redirect</ion-button>
       </ion-content>
     ];
   }

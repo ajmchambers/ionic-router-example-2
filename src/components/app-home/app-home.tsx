@@ -1,5 +1,5 @@
-import { Component, Listen, State, h, Prop } from '@stencil/core';
-import { SearchbarChangeEventDetail, RouterEventDetail } from '@ionic/core';
+import { Component, Listen, State, h } from '@stencil/core';
+import { RouterEventDetail } from '@ionic/core';
 import { paramsEncode, paramsDecode, ParamsObject } from '../../helpers/utils';
 
 @Component({
@@ -7,24 +7,28 @@ import { paramsEncode, paramsDecode, ParamsObject } from '../../helpers/utils';
   styleUrl: 'app-home.css'
 })
 export class AppHome {
-  @Prop({ connect: 'ion-router' }) router: HTMLIonRouterElement;
   @State() searchParams: ParamsObject = paramsDecode(window.location.search);
 
-  @Listen('ionRouteWillChange', {target: "body"})
-  async ionRouteWillChange(_e: CustomEvent<RouterEventDetail>) {
-    this.searchParams = paramsDecode(window.location.search);
+  private searchbarEl: HTMLIonSearchbarElement;
+
+  @Listen('ionRouteDidChange', {target: "body"})
+  async ionRouteDidChange(_e: CustomEvent<RouterEventDetail>) {
+    if (_e.detail.to !== "/") {
+      return;
+    }
+    this.handleSearchChange();
   }
 
-  async handleSearchChange(e: CustomEvent<SearchbarChangeEventDetail>) {
+  async handleSearchChange(_e?) {
     this.searchParams = {
       ...this.searchParams,
-      search: e.detail.value
+      search: this.searchbarEl.value
     };
     const search = paramsEncode(this.searchParams);
     const oldUrl = `${window.location.pathname}${window.location.search}`;
     const newUrl = `${window.location.pathname}${search}`;
     if (oldUrl !== newUrl) {
-      const router: HTMLIonRouterElement = await (this.router as any).componentOnReady();
+      const router: HTMLIonRouterElement = document.querySelector('ion-router');
       router.push(newUrl, "root");
     }
   }
@@ -36,7 +40,7 @@ export class AppHome {
           <ion-title>Home</ion-title>
         </ion-toolbar>
         <ion-toolbar color="primary">
-          <ion-searchbar value={this.searchParams.search} onIonChange={(e) => this.handleSearchChange(e)}/>
+          <ion-searchbar value={this.searchParams.search} ref={el => this.searchbarEl = el} onIonChange={(e) => this.handleSearchChange(e)}/>
         </ion-toolbar>
       </ion-header>,
 
